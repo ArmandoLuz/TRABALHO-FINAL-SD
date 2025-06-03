@@ -7,6 +7,7 @@ services:
     environment:
       - HOST=lb1
       - PORT=4000
+      - TOTAL_MESSAGES=25
     volumes:
       - ./logs/source:/app/source/logs
     networks:
@@ -16,12 +17,19 @@ services:
     build: ./load_balancer
     container_name: lb1
     depends_on:
-      - service1
-      - service2
+      - service1_1
+      - service1_2
+      - service1_3
+      - service1_4
+      - service1_5
+      #- service1_6
+      #- service1_7
     environment:
       - LISTEN_HOST=0.0.0.0
       - LISTEN_PORT=4000
-      - SERVERS=service1:5000,service2:5001
+      #- SERVERS=service1_1:5000,service1_2:5001,service1_3:5002,service1_4:5003,service1_5:5004,service1_6:5005,service1_7:5006
+      #- SERVERS=service1_1:5000,service1_2:5001,service1_3:5002,service1_4:5003,service1_5:5004,service1_6:5005
+      - SERVERS=service1_1:5000,service1_2:5001,service1_3:5002,service1_4:5003,service1_5:5004
       - LB_ID=1
     volumes:
       - ./logs/lb1:/app/load_balancer/logs
@@ -34,12 +42,19 @@ services:
     build: ./load_balancer
     container_name: lb2
     depends_on:
-      - service3
-      - service4
+      - service2_1
+      - service2_2
+      - service2_3
+      - service2_4
+      - service2_5
+      #- service2_6
+      #- service2_7
     environment:
       - LISTEN_HOST=0.0.0.0
       - LISTEN_PORT=6000
-      - SERVERS=service3:7000,service4:7001
+      #- SERVERS=service2_1:7000,service2_2:7001,service2_3:7002,service2_4:7003,service2_5:7004,service2_6:7005,service2_7:7006
+      #- SERVERS=service2_1:7000,service2_2:7001,service2_3:7002,service2_4:7003,service2_5:7004,service2_6:7005
+      - SERVERS=service2_1:7000,service2_2:7001,service2_3:7002,service2_4:7003,service2_5:7004
       - LB_ID=2
     volumes:
       - ./logs/lb2:/app/load_balancer/logs
@@ -48,57 +63,187 @@ services:
     ports:
       - "6000:6000"
 
-  service1:
+  service1_1:
     build: ./service
-    container_name: service1
+    container_name: service1_1
     environment:
       - SERVICE_HOST=0.0.0.0
       - SERVICE_PORT=5000
       - FORWARD_HOST=lb2
       - FORWARD_PORT=6000
     volumes:
-      - ./logs/service1:/app/service/logs
+      - ./logs/service1_1:/app/service/logs
     depends_on:
       - lb2
     networks:
       - app_net
 
-  service2:
+  service1_2:
     build: ./service
-    container_name: service2
+    container_name: service1_2
     environment:
       - SERVICE_HOST=0.0.0.0
       - SERVICE_PORT=5001
       - FORWARD_HOST=lb2
       - FORWARD_PORT=6000
     volumes:
-      - ./logs/service2:/app/service/logs
+      - ./logs/service1_2:/app/service/logs
     depends_on:
       - lb2
     networks:
       - app_net
 
-  service3:
+  service1_3:
     build: ./service
-    container_name: service3
+    container_name: service1_3
+    environment:
+      - SERVICE_HOST=0.0.0.0
+      - SERVICE_PORT=5002
+      - FORWARD_HOST=lb2
+      - FORWARD_PORT=6000
+    volumes:
+      - ./logs/service1_3:/app/service/logs
+    depends_on:
+      - lb2
+    networks:
+      - app_net
+
+  service1_4:
+    build: ./service
+    container_name: service1_4
+    environment:
+      - SERVICE_HOST=0.0.0.0
+      - SERVICE_PORT=5003
+      - FORWARD_HOST=lb2
+      - FORWARD_PORT=6000
+    volumes:
+      - ./logs/service1_4:/app/service/logs
+    depends_on:
+      - lb2
+    networks:
+      - app_net
+
+  service1_5:
+    build: ./service
+    container_name: service1_5
+    environment:
+      - SERVICE_HOST=0.0.0.0
+      - SERVICE_PORT=5004
+      - FORWARD_HOST=lb2
+      - FORWARD_PORT=6000
+    volumes:
+      - ./logs/service1_5:/app/service/logs
+    depends_on:
+      - lb2
+    networks:
+      - app_net
+
+#  service1_6:
+#    build: ./service
+#    container_name: service1_6
+#    environment:
+#      - SERVICE_HOST=0.0.0.0
+#      - SERVICE_PORT=5005
+#      - FORWARD_HOST=lb2
+#      - FORWARD_PORT=6000
+#    volumes:
+#      - ./logs/service1_6:/app/service/logs
+#    depends_on:
+#      - lb2
+#    networks:
+#      - app_net
+#
+#  service1_7:
+#    build: ./service
+#    container_name: service1_7
+#    environment:
+#      - SERVICE_HOST=0.0.0.0
+#      - SERVICE_PORT=5006
+#      - FORWARD_HOST=lb2
+#      - FORWARD_PORT=6000
+#    volumes:
+#      - ./logs/service1_7:/app/service/logs
+#    depends_on:
+#      - lb2
+#    networks:
+#      - app_net
+
+  service2_1:
+    build: ./service
+    container_name: service2_1
     environment:
       - SERVICE_HOST=0.0.0.0
       - SERVICE_PORT=7000
     volumes:
-      - ./logs/service3:/app/service/logs
+      - ./logs/service2_1:/app/service/logs
     networks:
       - app_net
 
-  service4:
+  service2_2:
     build: ./service
-    container_name: service4
+    container_name: service2_2
     environment:
       - SERVICE_HOST=0.0.0.0
       - SERVICE_PORT=7001
     volumes:
-      - ./logs/service4:/app/service/logs
+      - ./logs/service2_2:/app/service/logs
     networks:
       - app_net
+
+  service2_3:
+    build: ./service
+    container_name: service2_3
+    environment:
+      - SERVICE_HOST=0.0.0.0
+      - SERVICE_PORT=7002
+    volumes:
+      - ./logs/service2_3:/app/service/logs
+    networks:
+      - app_net
+
+  service2_4:
+    build: ./service
+    container_name: service2_4
+    environment:
+      - SERVICE_HOST=0.0.0.0
+      - SERVICE_PORT=7003
+    volumes:
+      - ./logs/service2_4:/app/service/logs
+    networks:
+      - app_net
+
+  service2_5:
+    build: ./service
+    container_name: service2_5
+    environment:
+      - SERVICE_HOST=0.0.0.0
+      - SERVICE_PORT=7004
+    volumes:
+      - ./logs/service2_5:/app/service/logs
+    networks:
+      - app_net
+
+#  service2_6:
+#    build: ./service
+#    container_name: service2_6
+#    environment:
+#      - SERVICE_HOST=0.0.0.0
+#      - SERVICE_PORT=7005
+#    volumes:
+#      - ./logs/service2_6:/app/service/logs
+#    networks:
+#      - app_net
+#
+#  service2_7:
+#    build: ./service
+#    container_name: service2_7
+#    environment:
+#      - SERVICE_HOST=0.0.0.0
+#      - SERVICE_PORT=7006
+#    volumes:
+#      - ./logs/service2_7:/app/service/logs
+#    networks:
+#      - app_net
 
 networks:
   app_net:

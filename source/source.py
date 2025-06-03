@@ -13,7 +13,7 @@ logging.basicConfig(
 )
 
 class Source:
-    def __init__(self, host='localhost', port=4000):
+    def __init__(self, host='localhost', port=4000, total_messages=5):
         self.host = host
         self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,6 +21,7 @@ class Source:
         self.mrt = 0
         self.std = 0
         self.mean_response_times = []
+        self.total_messages = total_messages
 
     def get_timestamp(self):
         return datetime.now().isoformat()
@@ -30,8 +31,8 @@ class Source:
         print(f"[SOURCE] Conectado ao LoadBalancer em {self.host}:{self.port}")
         logging.info(f"[SOURCE] Conectado ao LoadBalancer em {self.host}:{self.port}")
 
-    def send_messages(self, total_messages=5):
-        for num_msg in range(1, total_messages + 1):
+    def send_messages(self):
+        for num_msg in range(1, self.total_messages + 1):
             origin_ts = self.get_timestamp()
             message = f"{self.num_ciclo};{num_msg};{origin_ts};"
             self.socket.sendall(message.encode())
@@ -82,11 +83,13 @@ class Source:
 if __name__ == "__main__":
     host = sys.argv[1] if len(sys.argv) > 1 else os.environ.get("HOST", "lb1")
     port = int(sys.argv[2]) if len(sys.argv) > 2 else int(os.environ.get("PORT", 4000))
+    total_messages = int(sys.argv[3]) if len(sys.argv) > 3 else int(os.environ.get("TOTAL_MESSAGES", 5))
     print(f"[SOURCE] Conectando ao LoadBalancer em {host}:{port}")
     logging.info(f"[SOURCE] Conectando ao LoadBalancer:{port} em 15 segundos")
+    print(f"[SOURCE] Enviando {total_messages} mensagens")
     time.sleep(15)
 
-    Source = Source(host=host, port=port)
+    Source = Source(host=host, port=port, total_messages=total_messages)
     try:
         Source.connect()
         Source.send_messages()
